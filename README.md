@@ -113,3 +113,47 @@ npm start
 | Image Storage      | Cloudinary          |
 | Email              | Nodemailer          |
 | CI/CD              | GitHub Actions      |
+
+---
+
+## 🚀 How to Add Your Website
+
+Getting your site monitored by Gazebot takes less than 2 minutes.
+
+### Step 1: Fork this Repository
+
+Click the **Fork** button at the top right of this repository to create a copy in your own GitHub account.
+
+### Step 2: Add Your Configuration
+
+Open the `gazebot.json` file in the root directory. Add your configuration object to the JSON array.
+
+Here is an example of what to add:
+
+```json
+  {
+    "github_user": "aniketchawardol",
+    "email": "aniketchawardol@gmail.com",
+    "monitors": [
+      {
+        "target_url": "https://chawardolaniket.is-a.dev",
+        "wait_time_ms": 3000,
+        "tolerance_percent": 1.0,
+        "baseline_version": 1,
+        "ad_selectors": [],
+        "viewports": [
+          { "name": "desktop", "width": 1920, "height": 1080 },
+          { "name": "mobile", "width": 375, "height": 812 }
+        ]
+      }
+    ]
+  }
+
+```
+
+### Step 3: Submit a Pull Request
+
+Once you've added your entry, commit the changes and submit a **Pull Request** to our `main` branch.
+
+* Once merged, Gazebot will immediately capture your baseline screenshots on its next daily run!
+
