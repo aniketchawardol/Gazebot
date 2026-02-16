@@ -5,9 +5,9 @@
     "monitors": [
       {
         "target_url": "https://chawardolaniket.is-a.dev/",
-        "wait_time_ms": 3000,
-        "tolerance_percent": 5,
-        "baseline_version": 1,
+        "wait_time_ms": 10000,
+        "tolerance_percent": 2,
+        "baseline_version": 2,
         "ad_selectors": [],
         "viewports": [
           { "name": "desktop", "width": 1920, "height": 1080 },

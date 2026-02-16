@@ -76,7 +76,7 @@ export async function evaluateMonitors(syncedData) {
         }
 
         // Capture screenshot as a PNG buffer
-        const screenshotBuffer = await page.screenshot({ type: 'png', fullPage: true });
+        const screenshotBuffer = Buffer.from(await page.screenshot({ type: 'png', fullPage: true }));
 
         evaluations.push({
           user,

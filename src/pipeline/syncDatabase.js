@@ -53,6 +53,9 @@ export async function syncDatabase() {
         {
           userId: user._id,
           target_url: mon.target_url,
+          wait_time_ms: mon.wait_time_ms || 0,
+          tolerance_percent: mon.tolerance_percent || 0,
+          ad_selectors: mon.ad_selectors || [],
           viewports,
           // NOTE: baseline_version is NOT overwritten here.
           // It is only updated in diffEngine when a version bump is detected.

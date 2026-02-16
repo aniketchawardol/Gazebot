@@ -21,6 +21,18 @@ const monitorSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  wait_time_ms: {
+    type: Number,
+    default: 0,
+  },
+  tolerance_percent: {
+    type: Number,
+    default: 0,
+  },
+  ad_selectors: {
+    type: [String],
+    default: [],
+  },
   viewports: [viewportSchema],
 }, { timestamps: true });
 
