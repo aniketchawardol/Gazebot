@@ -14,7 +14,30 @@ export async function syncDatabase() {
 
   console.log(`📄 Loaded gazebot.json — ${config.length} user(s) found.`);
 
+  // ── Validate URL uniqueness across ALL users ──────────────────────
+  const allUrls = config.flatMap((entry) =>
+    (entry.monitors || []).map((mon) => mon.target_url),
+  );
+  const seen = new Map();
+  for (const url of allUrls) {
+    seen.set(url, (seen.get(url) || 0) + 1);
+  }
+  const duplicates = [...seen.entries()]
+    .filter(([, count]) => count > 1)
+    .map(([url]) => url);
+
+  if (duplicates.length > 0) {
+    const list = duplicates.map((u) => `  • ${u}`).join('\n');
+    throw new Error(
+      `Duplicate target URLs detected in gazebot.json. Each URL must be unique:\n${list}`,
+    );
+  }
+  console.log('✅ URL uniqueness validated — no duplicates.');
+
+  // ── Sync users & monitors ─────────────────────────────────────────
   const results = [];
+  /** @type {Map<string, { user: object, urls: string[] }>} userId → new URLs */
+  const newUrlMap = new Map();
 
   for (const entry of config) {
     // Upsert the user by email
@@ -34,6 +57,8 @@ export async function syncDatabase() {
         userId: user._id,
         target_url: mon.target_url,
       });
+
+      const isNewUrl = !existingMonitor;
 
       const viewports = mon.viewports.map((vp) => {
         // If the monitor already exists, try to preserve the stored baseline_image_url
@@ -63,6 +88,16 @@ export async function syncDatabase() {
         { upsert: true, new: true, setDefaultsOnInsert: true },
       );
 
+      // Track newly added URLs for confirmation emails
+      if (isNewUrl) {
+        const uid = user._id.toString();
+        if (!newUrlMap.has(uid)) {
+          newUrlMap.set(uid, { user, urls: [] });
+        }
+        newUrlMap.get(uid).urls.push(mon.target_url);
+        console.log(`  🆕 New URL added: ${mon.target_url}`);
+      }
+
       monitors.push({
         dbMonitor: monitor,
         jsonConfig: mon, // keep the full JSON entry for tolerance, wait_time, ad_selectors, etc.
@@ -74,5 +109,5 @@ export async function syncDatabase() {
     results.push({ user, monitors });
   }
 
-  return results;
+  return { syncedData: results, newUrlMap };
 }

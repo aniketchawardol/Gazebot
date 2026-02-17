@@ -7,7 +7,7 @@
         "target_url": "https://chawardolaniket.is-a.dev/",
         "wait_time_ms": 10000,
         "tolerance_percent": 2,
-        "baseline_version": 3,
+        "baseline_version": 4,
         "ad_selectors": ["#metaballs", "#rotating-text"],
         "viewports": [
           { "name": "desktop", "width": 1920, "height": 1080 },

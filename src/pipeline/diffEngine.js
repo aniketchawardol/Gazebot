@@ -12,6 +12,8 @@ import { uploadBuffer, fetchImageBuffer } from '../utils/cloudinary.js';
  */
 export async function runDiffEngine(evaluations) {
   const diffResults = [];
+  /** @type {Map<string, { user: object, events: Array<{url: string, viewport: string, imageUrl: string}> }>} */
+  const baselineMap = new Map();
 
   for (const evaluation of evaluations) {
     const {
@@ -81,6 +83,17 @@ export async function runDiffEngine(evaluations) {
         oldUrl: null,
         newUrl: imageUrl,
         diffUrl: null,
+      });
+
+      // Track for baseline confirmation email
+      const uid = user._id.toString();
+      if (!baselineMap.has(uid)) {
+        baselineMap.set(uid, { user, events: [] });
+      }
+      baselineMap.get(uid).events.push({
+        url: jsonConfig.target_url,
+        viewport: `${viewport.name} (${viewport.width}×${viewport.height})`,
+        imageUrl,
       });
 
       continue;
@@ -153,7 +166,7 @@ export async function runDiffEngine(evaluations) {
     }
   }
 
-  return diffResults;
+  return { diffResults, baselineMap };
 }
 
 /**
