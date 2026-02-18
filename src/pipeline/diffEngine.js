@@ -8,7 +8,7 @@ import { uploadBuffer, fetchImageBuffer } from '../utils/cloudinary.js';
  * or run a pixelmatch diff against the existing baseline (Scenario B).
  *
  * @param {Array} evaluations - Output from evaluateMonitors()
- * @returns {Promise<Array>} diffResults — enriched with mismatch data and Cloudinary URLs
+ * @returns {Promise<Array>} diffResults -- enriched with mismatch data and Cloudinary URLs
  */
 export async function runDiffEngine(evaluations) {
   const diffResults = [];
@@ -56,7 +56,7 @@ export async function runDiffEngine(evaluations) {
     // Scenario A: Version Bump or New Monitor (no baseline image yet)
     // ---------------------------------------------------------------
     if (jsonVersion > dbVersion || !hasBaseline) {
-      console.log(`  📸 Scenario A — Setting new baseline for ${jsonConfig.target_url} [${viewport.name}]`);
+      console.log(`  Scenario A -- Setting new baseline for ${jsonConfig.target_url} [${viewport.name}]`);
 
       const folder = `gazebot/${user.github_user}/${encodeURIComponent(jsonConfig.target_url)}`;
       const imageUrl = await uploadBuffer(screenshotBuffer, folder);
@@ -92,7 +92,7 @@ export async function runDiffEngine(evaluations) {
       }
       baselineMap.get(uid).events.push({
         url: jsonConfig.target_url,
-        viewport: `${viewport.name} (${viewport.width}×${viewport.height})`,
+        viewport: `${viewport.name} (${viewport.width}x${viewport.height})`,
         imageUrl,
       });
 
@@ -100,10 +100,10 @@ export async function runDiffEngine(evaluations) {
     }
 
     // ---------------------------------------------------------------
-    // Scenario B: Daily Run — compare against baseline
+    // Scenario B: Daily Run -- compare against baseline
     // ---------------------------------------------------------------
     if (jsonVersion === dbVersion) {
-      console.log(`  🔍 Scenario B — Comparing ${jsonConfig.target_url} [${viewport.name}] against baseline…`);
+      console.log(`  Scenario B -- Comparing ${jsonConfig.target_url} [${viewport.name}] against baseline...`);
 
       const baselineBuffer = await fetchImageBuffer(dbViewport.baseline_image_url);
 
@@ -111,7 +111,7 @@ export async function runDiffEngine(evaluations) {
       const baselineImg = PNG.sync.read(baselineBuffer);
       const currentImg = PNG.sync.read(screenshotBuffer);
 
-      // Ensure dimensions match — use the min of both to avoid crashes
+      // Ensure dimensions match -- use the min of both to avoid crashes
       const width = Math.min(baselineImg.width, currentImg.width);
       const height = Math.min(baselineImg.height, currentImg.height);
 
@@ -134,7 +134,7 @@ export async function runDiffEngine(evaluations) {
       const totalPixels = width * height;
       const mismatchPercent = (numDiffPixels / totalPixels) * 100;
 
-      console.log(`    📊 Mismatch: ${mismatchPercent.toFixed(2)}% (tolerance: ${jsonConfig.tolerance_percent}%)`);
+      console.log(`    Mismatch: ${mismatchPercent.toFixed(2)}% (tolerance: ${jsonConfig.tolerance_percent}%)`);
 
       const result = {
         user,
@@ -151,7 +151,7 @@ export async function runDiffEngine(evaluations) {
 
       // If mismatch exceeds tolerance, upload the new screenshot AND the diff image
       if (mismatchPercent > jsonConfig.tolerance_percent) {
-        console.log(`    🚨 Regression detected! Uploading evidence…`);
+        console.log(`    [ALERT] Regression detected! Uploading evidence...`);
 
         const folder = `gazebot/${user.github_user}/${encodeURIComponent(jsonConfig.target_url)}`;
         const newUrl = await uploadBuffer(screenshotBuffer, `${folder}/regressions`);

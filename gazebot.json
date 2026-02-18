@@ -16,5 +16,23 @@
         ]
       }
     ]
+  },
+  {
+    "github_user": "aniketchawardol",
+    "email": "aniketchawardol@gmail.com",
+    "monitors": [
+      {
+        "target_url": "https://doctors-com-frontend.vercel.app/",
+        "wait_time_ms": 1000,
+        "tolerance_percent": 5,
+        "baseline_version": 1,
+        "ad_selectors": [],
+        "viewports": [
+          { "name": "desktop", "width": 1920, "height": 1080 },
+          { "name": "tablet", "width": 768, "height": 1024 },
+          { "name": "phone", "width": 375, "height": 812 }
+        ]
+      }
+    ]
   }
 ]

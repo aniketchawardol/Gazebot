@@ -9,7 +9,7 @@ export async function connectDB() {
     throw new Error('MONGODB_URI is not defined in environment variables.');
   }
   await mongoose.connect(uri);
-  console.log('✅ Connected to MongoDB.');
+  console.log('Connected to MongoDB.');
 }
 
 /**
@@ -17,5 +17,5 @@ export async function connectDB() {
  */
 export async function disconnectDB() {
   await mongoose.disconnect();
-  console.log('🔌 Disconnected from MongoDB.');
+  console.log('Disconnected from MongoDB.');
 }

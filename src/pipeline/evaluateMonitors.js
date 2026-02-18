@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 /**
- * Launch Puppeteer, iterate over every monitor × viewport, perform ad
+ * Launch Puppeteer, iterate over every monitor x viewport, perform ad
  * verification & masking, and capture screenshots.
  *
  * @param {Array} syncedData - Output from syncDatabase(): [{ user, monitors }]
@@ -14,7 +14,7 @@ export async function evaluateMonitors(syncedData) {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
-  console.log('🚀 Puppeteer browser launched.');
+  console.log('Puppeteer browser launched.');
 
   const evaluations = [];
 
@@ -30,12 +30,12 @@ export async function evaluateMonitors(syncedData) {
         const page = await browser.newPage();
         await page.setViewport({ width: viewport.width, height: viewport.height });
 
-        console.log(`  🌐 Navigating to ${target_url} [${viewport.name}: ${viewport.width}×${viewport.height}]`);
+        console.log(`  Navigating to ${target_url} [${viewport.name}: ${viewport.width}x${viewport.height}]`);
 
         try {
           await page.goto(target_url, { waitUntil: 'networkidle2', timeout: 60000 });
         } catch (err) {
-          console.error(`  ❌ Navigation failed for ${target_url}: ${err.message}`);
+          console.error(`  [FAIL] Navigation failed for ${target_url}: ${err.message}`);
           evaluations.push({
             user,
             dbMonitor,
@@ -72,7 +72,7 @@ export async function evaluateMonitors(syncedData) {
         }, ad_selectors);
 
         if (adErrors.length > 0) {
-          adErrors.forEach((e) => console.log(`  ⚠️  ${e}`));
+          adErrors.forEach((e) => console.log(`  [WARN] ${e}`));
         }
 
         // Capture screenshot as a PNG buffer

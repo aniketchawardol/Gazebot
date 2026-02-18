@@ -12,9 +12,9 @@ export async function syncDatabase() {
   const raw = await readFile(configPath, 'utf-8');
   const config = JSON.parse(raw);
 
-  console.log(`📄 Loaded gazebot.json — ${config.length} user(s) found.`);
+  console.log(`Loaded gazebot.json -- ${config.length} user(s) found.`);
 
-  // ── Validate URL uniqueness across ALL users ──────────────────────
+  // -- Validate URL uniqueness across ALL users ----------------------
   const allUrls = config.flatMap((entry) =>
     (entry.monitors || []).map((mon) => mon.target_url),
   );
@@ -27,16 +27,16 @@ export async function syncDatabase() {
     .map(([url]) => url);
 
   if (duplicates.length > 0) {
-    const list = duplicates.map((u) => `  • ${u}`).join('\n');
+    const list = duplicates.map((u) => `  - ${u}`).join('\n');
     throw new Error(
       `Duplicate target URLs detected in gazebot.json. Each URL must be unique:\n${list}`,
     );
   }
-  console.log('✅ URL uniqueness validated — no duplicates.');
+  console.log('URL uniqueness validated -- no duplicates.');
 
-  // ── Sync users & monitors ─────────────────────────────────────────
+  // -- Sync users & monitors -----------------------------------------
   const results = [];
-  /** @type {Map<string, { user: object, urls: string[] }>} userId → new URLs */
+  /** @type {Map<string, { user: object, urls: string[] }>} userId -> new URLs */
   const newUrlMap = new Map();
 
   for (const entry of config) {
@@ -47,7 +47,7 @@ export async function syncDatabase() {
       { upsert: true, new: true, setDefaultsOnInsert: true },
     );
 
-    console.log(`👤 Synced user: ${user.email} (${user._id})`);
+    console.log(`Synced user: ${user.email} (${user._id})`);
 
     const monitors = [];
 
@@ -95,7 +95,7 @@ export async function syncDatabase() {
           newUrlMap.set(uid, { user, urls: [] });
         }
         newUrlMap.get(uid).urls.push(mon.target_url);
-        console.log(`  🆕 New URL added: ${mon.target_url}`);
+        console.log(`  [NEW] URL added: ${mon.target_url}`);
       }
 
       monitors.push({
@@ -103,7 +103,7 @@ export async function syncDatabase() {
         jsonConfig: mon, // keep the full JSON entry for tolerance, wait_time, ad_selectors, etc.
       });
 
-      console.log(`  🔗 Synced monitor: ${mon.target_url} (${monitor._id})`);
+      console.log(`  Synced monitor: ${mon.target_url} (${monitor._id})`);
     }
 
     results.push({ user, monitors });
