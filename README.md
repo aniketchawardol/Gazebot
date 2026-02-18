@@ -1,4 +1,4 @@
-# 🤖 Gazebot
+# <img width="50" height="50" alt="logo" src="https://github.com/user-attachments/assets/f170f755-322a-4dda-a467-8575d47c8a3b" />  Gaze bot
 
 **PR-driven visual regression & functional testing tool.**
 
