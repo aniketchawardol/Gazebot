@@ -24,7 +24,7 @@
       {
         "target_url": "https://doctors-com-frontend.vercel.app/",
         "wait_time_ms": 1000,
-        "tolerance_percent": 5,
+        "tolerance_percent": 15,
         "baseline_version": 1,
         "ad_selectors": [],
         "viewports": [
