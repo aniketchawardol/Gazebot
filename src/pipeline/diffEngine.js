@@ -8,7 +8,7 @@ import { uploadBuffer, fetchImageBuffer } from '../utils/cloudinary.js';
  * or run a pixelmatch diff against the existing baseline (Scenario B).
  *
  * @param {Array} evaluations - Output from evaluateMonitors()
- * @returns {Promise<Array>} diffResults -- enriched with mismatch data and Cloudinary URLs
+ * @returns {Promise<Array>} diffResults -- enriched with mismatch data and image buffers
  */
 export async function runDiffEngine(evaluations) {
   const diffResults = [];
@@ -35,9 +35,8 @@ export async function runDiffEngine(evaluations) {
         adErrors,
         action: 'SKIPPED',
         mismatchPercent: null,
-        oldUrl: null,
-        newUrl: null,
-        diffUrl: null,
+        newBuffer: null,
+        diffBuffer: null,
       });
       continue;
     }
@@ -80,9 +79,8 @@ export async function runDiffEngine(evaluations) {
         adErrors,
         action: 'BASELINE_SET',
         mismatchPercent: null,
-        oldUrl: null,
-        newUrl: imageUrl,
-        diffUrl: null,
+        newBuffer: null,
+        diffBuffer: null,
       });
 
       // Track for baseline confirmation email
@@ -144,22 +142,16 @@ export async function runDiffEngine(evaluations) {
         adErrors,
         action: 'COMPARED',
         mismatchPercent,
-        oldUrl: dbViewport.baseline_image_url,
-        newUrl: null,
-        diffUrl: null,
+        newBuffer: null,
+        diffBuffer: null,
       };
 
-      // If mismatch exceeds tolerance, upload the new screenshot AND the diff image
+      // If mismatch exceeds tolerance, keep the raw buffers for email attachment
       if (mismatchPercent > jsonConfig.tolerance_percent) {
-        console.log(`    [ALERT] Regression detected! Uploading evidence...`);
+        console.log(`    [ALERT] Regression detected! Preparing evidence...`);
 
-        const folder = `gazebot/${user.github_user}/${encodeURIComponent(jsonConfig.target_url)}`;
-        const newUrl = await uploadBuffer(screenshotBuffer, `${folder}/regressions`);
-        const diffBuffer = PNG.sync.write(diffImg);
-        const diffUrl = await uploadBuffer(diffBuffer, `${folder}/diffs`);
-
-        result.newUrl = newUrl;
-        result.diffUrl = diffUrl;
+        result.newBuffer = screenshotBuffer;
+        result.diffBuffer = PNG.sync.write(diffImg);
       }
 
       diffResults.push(result);

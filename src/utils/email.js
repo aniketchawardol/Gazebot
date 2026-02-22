@@ -18,13 +18,15 @@ const transporter = nodemailer.createTransport({
  * @param {string} to - Recipient email address.
  * @param {string} subject - Email subject line.
  * @param {string} htmlBody - The HTML content of the email.
+ * @param {Array} [attachments] - Optional nodemailer attachments array.
  */
-export async function sendAlertEmail(to, subject, htmlBody) {
+export async function sendAlertEmail(to, subject, htmlBody, attachments = []) {
   const info = await transporter.sendMail({
     from: `"Gazebot" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html: htmlBody,
+    attachments,
   });
   console.log(`Email sent to ${to} -- Message ID: ${info.messageId}`);
 }
