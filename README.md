@@ -1,6 +1,7 @@
 # <img width="50" height="50" alt="logo" src="https://github.com/user-attachments/assets/f170f755-322a-4dda-a467-8575d47c8a3b" /> Gaze bot
 
-**An open-source, PR-driven visual regression & functional testing tool.**
+**An open-source, PR-driven visual regression & functional testing tool.**<img width="1662" height="551" alt="gazebot" src="https://github.com/user-attachments/assets/82c3ee69-7bef-466b-b447-69082ff07604" />
+
 
 Gazebot monitors your web pages for UI regressions, broken layouts, and ad placement failures. It runs daily via GitHub Actions, captures full-page screenshots with Puppeteer, compares them against your approved baselines using `pixelmatch`, and sends you a consolidated email digest if anything breaks.
 
